@@ -69,6 +69,7 @@ namespace SimpleMediaPlayer
 
         private void FilesListBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            player.StopMedia();
             PlayMediaByIndex(this.filesListBox.IndexFromPoint(e.Location));
         }
 
@@ -83,17 +84,22 @@ namespace SimpleMediaPlayer
             {
                 var filePath = listItens[index];
                 player.PlayMedia(filePath);
+                pauseBtn.Text = "Pause";
+                filePlayingNameLbl.Text = filesListBox.Items[index].ToString();
             }
         }
 
         private void StopBtn_Click(object sender, EventArgs e)
         {
             player.StopMedia();
+            pauseBtn.Text = "Pause";
+            filePlayingNameLbl.Text = "";
         }
 
         private void PauseBtn_Click(object sender, EventArgs e)
         {
             player.PauseMedia();
+            pauseBtn.Text = player.status == PlayerFullScreen.MediaStatus.Paused ? "Paused" : "Pause";
         }
     }
 }

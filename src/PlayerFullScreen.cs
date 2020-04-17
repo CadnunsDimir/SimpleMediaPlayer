@@ -22,7 +22,15 @@ namespace SimpleMediaPlayer
             Stoped
         }
 
-        private MediaStatus status = MediaStatus.Stoped;
+        private MediaStatus _status = MediaStatus.Stoped;
+
+        public MediaStatus status
+        {
+            get
+            {
+                return _status;
+            }
+        }
 
 
         private PlayerFullScreen()
@@ -53,6 +61,7 @@ namespace SimpleMediaPlayer
             wmp.enableContextMenu = false;
             wmp.uiMode = "none";
             wmp.stretchToFit = true;
+            wmp.Ctlenabled = false;
         }
 
         public void MaximizeOnSecondDisplay()
@@ -65,12 +74,20 @@ namespace SimpleMediaPlayer
             }
         }
 
-        internal void PlayMedia(string filePath)
+        public void PlayMedia(string filePath)
         {
-            this.currentFilePath = filePath;
-            wmp.URL = filePath;
-            wmp.settings.autoStart = true;
-            status = MediaStatus.Playing;
+            if (this.currentFilePath != filePath)
+            {
+
+                this.currentFilePath = filePath;
+                wmp.URL = filePath;
+                wmp.settings.autoStart = true;
+                _status = MediaStatus.Playing;
+            }
+            else if(_status == MediaStatus.Paused)
+            {
+                this.PauseMedia();
+            }
         }
 
         private void Wmp_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
@@ -84,7 +101,7 @@ namespace SimpleMediaPlayer
                 }
             }
 
-            if (e.newState == 1 && status != MediaStatus.Stoped)//end execution
+            if (e.newState == 1 && _status != MediaStatus.Stoped)//end execution
             {   
                 wmp.Ctlcontrols.currentPosition = wmp.currentMedia.duration - .001;
                 wmp.Ctlcontrols.play();
@@ -94,23 +111,40 @@ namespace SimpleMediaPlayer
 
         private bool FileIsImage()
         {
-            var extensions = new List<string>
+            if (currentFilePath != null)
             {
-                ".jpg",
-                ".png"
-            };
-            return extensions.Any(x=> this.currentFilePath.ToLower().Contains(x));
+                var extensions = new List<string>
+                {
+                    ".jpg",
+                    ".png"
+                };
+                return extensions.Any(x => currentFilePath.ToLower().Contains(x));
+            }
+            return false;
         }
 
-        internal void StopMedia()
+        public void StopMedia()
         {
-            status = MediaStatus.Stoped;
+            _status = MediaStatus.Stoped;
             wmp.Ctlcontrols.stop();
+            currentFilePath = null;
         }
 
-        internal void PauseMedia()
+        public void PauseMedia()
         {
-            wmp.Ctlcontrols.pause();
+            if (!FileIsImage())
+            {
+                if (_status == MediaStatus.Playing)
+                {
+                    _status = MediaStatus.Paused;
+                    wmp.Ctlcontrols.pause();
+                }
+                else if (_status == MediaStatus.Paused)
+                {
+                    _status = MediaStatus.Playing;
+                    wmp.Ctlcontrols.play();
+                }
+            }
         }
     }
 }

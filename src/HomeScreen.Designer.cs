@@ -33,6 +33,8 @@
             this.playBtn = new System.Windows.Forms.Button();
             this.pauseBtn = new System.Windows.Forms.Button();
             this.stopBtn = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.filePlayingNameLbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -84,11 +86,30 @@
             this.stopBtn.UseVisualStyleBackColor = true;
             this.stopBtn.Click += new System.EventHandler(this.StopBtn_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 180);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Now Playing:";
+            // 
+            // filePlayingNameLbl
+            // 
+            this.filePlayingNameLbl.AutoSize = true;
+            this.filePlayingNameLbl.Location = new System.Drawing.Point(88, 180);
+            this.filePlayingNameLbl.Name = "filePlayingNameLbl";
+            this.filePlayingNameLbl.Size = new System.Drawing.Size(0, 13);
+            this.filePlayingNameLbl.TabIndex = 6;
+            // 
             // HomeScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(440, 288);
+            this.Controls.Add(this.filePlayingNameLbl);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBtn);
             this.Controls.Add(this.pauseBtn);
             this.Controls.Add(this.playBtn);
@@ -97,6 +118,7 @@
             this.Name = "HomeScreen";
             this.Text = "Simple Media Player (for JW Meeting)";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -107,6 +129,8 @@
         private System.Windows.Forms.Button playBtn;
         private System.Windows.Forms.Button pauseBtn;
         private System.Windows.Forms.Button stopBtn;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label filePlayingNameLbl;
     }
 }
 
