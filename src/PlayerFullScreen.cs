@@ -66,11 +66,24 @@ namespace SimpleMediaPlayer
 
         public void MaximizeOnSecondDisplay()
         {
-            if(Screen.AllScreens.Length > 1)
+            if (Screen.AllScreens.Length > 1)
             {
-                this.Location = Screen.AllScreens[1].WorkingArea.Location;
+                var controlBarZoomSize = 80;
+                var width720resolution = 1280;
+                var height720resolution = 760;
+
+                var display = Screen.AllScreens[1].WorkingArea;
                 FormBorderStyle = FormBorderStyle.None;
-                WindowState = FormWindowState.Maximized;
+                //WindowState = FormWindowState.Maximized;
+
+                Width = width720resolution - controlBarZoomSize;
+                Height = height720resolution - controlBarZoomSize;
+
+                this.Location = new Point()
+                {
+                    X = display.Location.X +20,
+                    Y = display.Location.Y + controlBarZoomSize
+                };
             }
         }
 
