@@ -52,6 +52,7 @@
     <Compile Include="HomeScreen.Designer.cs">
       <DependentUpon>HomeScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Args\MediaExecutionProgressArgs.cs" />
     <Compile Include="PlayerFullScreen.cs">
       <SubType>Form</SubType>
     </Compile>

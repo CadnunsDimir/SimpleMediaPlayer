@@ -35,6 +35,7 @@
             this.stopBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.filePlayingNameLbl = new System.Windows.Forms.Label();
+            this.timeInfoLbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -103,11 +104,21 @@
             this.filePlayingNameLbl.Size = new System.Drawing.Size(0, 13);
             this.filePlayingNameLbl.TabIndex = 6;
             // 
+            // timeInfoLbl
+            // 
+            this.timeInfoLbl.AutoSize = true;
+            this.timeInfoLbl.Location = new System.Drawing.Point(16, 200);
+            this.timeInfoLbl.Name = "timeInfoLbl";
+            this.timeInfoLbl.Size = new System.Drawing.Size(72, 13);
+            this.timeInfoLbl.TabIndex = 7;
+            this.timeInfoLbl.Text = "00:00 / 00:00";
+            // 
             // HomeScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(440, 288);
+            this.Controls.Add(this.timeInfoLbl);
             this.Controls.Add(this.filePlayingNameLbl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBtn);
@@ -131,6 +142,7 @@
         private System.Windows.Forms.Button stopBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label filePlayingNameLbl;
+        private System.Windows.Forms.Label timeInfoLbl;
     }
 }
 

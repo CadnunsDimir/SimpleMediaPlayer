@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleMediaPlayer.Models.Args;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,6 +15,9 @@ namespace SimpleMediaPlayer
     {
         private static PlayerFullScreen player;
         private string currentFilePath;
+        private Timer timer;
+
+        public event EventHandler<MediaExecutionProgressArgs> MediaExecutionProgress;
 
         public enum MediaStatus
         {
@@ -22,15 +26,7 @@ namespace SimpleMediaPlayer
             Stoped
         }
 
-        private MediaStatus _status = MediaStatus.Stoped;
-
-        public MediaStatus status
-        {
-            get
-            {
-                return _status;
-            }
-        }
+        public MediaStatus status { get; private set; } = MediaStatus.Stoped;
 
 
         private PlayerFullScreen()
@@ -40,7 +36,7 @@ namespace SimpleMediaPlayer
 
         public static PlayerFullScreen GetPlayer()
         {
-            if(player == null)
+            if (player == null)
             {
                 player = new PlayerFullScreen();
             }
@@ -81,7 +77,7 @@ namespace SimpleMediaPlayer
 
                 this.Location = new Point()
                 {
-                    X = display.Location.X +20,
+                    X = display.Location.X + 20,
                     Y = display.Location.Y + controlBarZoomSize
                 };
             }
@@ -91,15 +87,55 @@ namespace SimpleMediaPlayer
         {
             if (this.currentFilePath != filePath)
             {
-
                 this.currentFilePath = filePath;
                 wmp.URL = filePath;
                 wmp.settings.autoStart = true;
-                _status = MediaStatus.Playing;
+                status = MediaStatus.Playing;
+                StartTimer();
             }
-            else if(_status == MediaStatus.Paused)
+            else if (status == MediaStatus.Paused)
             {
                 this.PauseMedia();
+            }
+        }
+
+        private void StartTimer()
+        {
+            StopTimer();
+
+            var zeroTime = "00:00";
+
+
+            if (this.MediaExecutionProgress != null)
+            {
+                this.MediaExecutionProgress.Invoke(new { }, new MediaExecutionProgressArgs(zeroTime, zeroTime));
+
+                if (!FileIsImage())
+                {
+                    timer = new Timer();
+                    timer.Tick += (sender, e) =>
+                    {
+                        var args = new MediaExecutionProgressArgs(wmp.Ctlcontrols.currentPositionString, wmp.currentMedia.durationString);
+                        this.MediaExecutionProgress.Invoke(this, args);
+                    };
+                    timer.Interval = 1500; // in miliseconds
+                    timer.Start();
+                }
+            }
+        }
+
+        private void StopTimer()
+        {
+            if (timer != null)
+            {
+                timer.Stop();
+                timer = null;
+            }
+
+            if (this.MediaExecutionProgress != null)
+            {
+                var zeroTime = "00:00";
+                this.MediaExecutionProgress.Invoke(this, new MediaExecutionProgressArgs(zeroTime, zeroTime));
             }
         }
 
@@ -114,8 +150,8 @@ namespace SimpleMediaPlayer
                 }
             }
 
-            if (e.newState == 1 && _status != MediaStatus.Stoped)//end execution
-            {   
+            if (e.newState == 1 && status != MediaStatus.Stoped)//end execution
+            {
                 wmp.Ctlcontrols.currentPosition = wmp.currentMedia.duration - .001;
                 wmp.Ctlcontrols.play();
                 wmp.Ctlcontrols.pause();
@@ -138,7 +174,8 @@ namespace SimpleMediaPlayer
 
         public void StopMedia()
         {
-            _status = MediaStatus.Stoped;
+            StopTimer();
+            status = MediaStatus.Stoped;
             wmp.Ctlcontrols.stop();
             currentFilePath = null;
         }
@@ -147,14 +184,14 @@ namespace SimpleMediaPlayer
         {
             if (!FileIsImage())
             {
-                if (_status == MediaStatus.Playing)
+                if (status == MediaStatus.Playing)
                 {
-                    _status = MediaStatus.Paused;
+                    status = MediaStatus.Paused;
                     wmp.Ctlcontrols.pause();
                 }
-                else if (_status == MediaStatus.Paused)
+                else if (status == MediaStatus.Paused)
                 {
-                    _status = MediaStatus.Playing;
+                    status = MediaStatus.Playing;
                     wmp.Ctlcontrols.play();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleMediaPlayer.Models.Args;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,6 +27,12 @@ namespace SimpleMediaPlayer
         private void StartFullScreenPlayer()
         {
             player = PlayerFullScreen.GetPlayer();
+            player.MediaExecutionProgress += Player_MediaExecutionProgress;
+        }
+
+        private void Player_MediaExecutionProgress(object sender, MediaExecutionProgressArgs e)
+        {
+            timeInfoLbl.Text = $"{e.CurrentTime} / {e.TotalTime}";
         }
 
         private void Button1_Click(object sender, EventArgs e)
